@@ -1,0 +1,88 @@
+<!-- src/app/components/reminder/reminder.component.html -->
+<div class="reminder-container">
+  <!-- Header with live clock -->
+  <div class="header">
+    <div class="clock-display" (click)="toggleFastMode()" [class.fast-mode]="fastMode">
+      <svg class="clock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <circle cx="12" cy="12" r="10"></circle>
+        <polyline points="12 6 12 12 16 14"></polyline>
+      </svg>
+      <span class="time-text">{{ formatTime(currentTime) }}</span>
+      <span class="speed-indicator" *ngIf="fastMode">⚡ Fast Mode</span>
+    </div>
+  </div>
+
+  <!-- Reminders List -->
+  <div class="reminders-list">
+    <h2 class="list-title">My Reminders</h2>
+    
+    <div *ngIf="reminders.length === 0" class="empty-state">
+      <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <p>No reminders yet. Click the + button to add one!</p>
+    </div>
+
+    <div class="reminder-item" 
+         *ngFor="let reminder of reminders" 
+         [class.completed]="reminder.isCompleted">
+      <div class="reminder-content">
+        <div class="reminder-text" [class.strikethrough]="reminder.isCompleted">
+          {{ reminder.text }}
+        </div>
+        <div class="reminder-time">
+          <svg class="time-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span>{{ formatTime(reminder.time) }} - {{ formatDate(reminder.time) }}</span>
+        </div>
+      </div>
+      <button class="delete-btn" (click)="deleteReminder(reminder.id)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <polyline points="3 6 5 6 21 6"></polyline>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Add Reminder Form -->
+  <div class="add-form" [class.show]="showAddForm">
+    <div class="form-content">
+      <h3>New Reminder</h3>
+      <input 
+        type="text" 
+        [(ngModel)]="newReminderText" 
+        placeholder="What do you need to remember?"
+        class="text-input"
+        (keyup.enter)="addReminder()">
+      
+      <div class="time-input-wrapper">
+        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <input 
+          type="datetime-local" 
+          [(ngModel)]="selectedTime" 
+          class="datetime-input">
+      </div>
+      
+      <div class="form-actions">
+        <button class="cancel-btn" (click)="toggleAddForm()">Cancel</button>
+        <button class="save-btn" (click)="addReminder()">Save Reminder</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Add Button -->
+  <button class="fab" (click)="toggleAddForm()" [class.rotate]="showAddForm">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+      <line x1="12" y1="5" x2="12" y2="19"></line>
+      <line x1="5" y1="12" x2="19" y2="12"></line>
+    </svg>
+  </button>
+</div>
